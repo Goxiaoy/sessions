@@ -1,3 +1,5 @@
+This fork remove the dependency on `http.Request` to adapt gateway usage
+
 # sessions
 
 [![GoDoc](https://godoc.org/github.com/gorilla/sessions?status.svg)](https://godoc.org/github.com/gorilla/sessions) [![Build Status](https://travis-ci.org/gorilla/sessions.svg?branch=master)](https://travis-ci.org/gorilla/sessions)
