@@ -9,7 +9,6 @@ import (
 type Header interface {
 	Get(key string) string
 	Values(key string) []string
-	Set(key, value string)
 }
 
 func ReadCookie(h Header, name string) (*http.Cookie, error) {
