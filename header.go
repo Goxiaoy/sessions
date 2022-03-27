@@ -9,6 +9,8 @@ import (
 type Header interface {
 	Get(key string) string
 	Values(key string) []string
+	Add(key, value string)
+	Set(key, value string)
 }
 
 func ReadCookie(h Header, name string) (*http.Cookie, error) {
@@ -16,6 +18,15 @@ func ReadCookie(h Header, name string) (*http.Cookie, error) {
 		return c, nil
 	}
 	return nil, http.ErrNoCookie
+}
+
+// SetCookie adds a Set-Cookie header to the provided ResponseWriter's headers.
+// The provided cookie must have a valid Name. Invalid cookies may be
+// silently dropped.
+func SetCookie(w Header, cookie *http.Cookie) {
+	if v := cookie.String(); v != "" {
+		w.Add("Set-Cookie", v)
+	}
 }
 
 // readCookies parses all "Cookie" values from the header h and

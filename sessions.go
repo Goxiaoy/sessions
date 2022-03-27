@@ -77,7 +77,7 @@ func (s *Session) AddFlash(value interface{}, vars ...string) {
 // Save is a convenience method to save this session. It is the same as calling
 // store.Save(request, response, session). You should call Save before writing to
 // the response or returning from the handler.
-func (s *Session) Save(h Header, w http.ResponseWriter) error {
+func (s *Session) Save(h Header, w Header) error {
 	return s.store.Save(h, w, s)
 }
 
@@ -151,7 +151,7 @@ func (s *Registry) Get(store Store, name string) (session *Session, err error) {
 }
 
 // Save saves all sessions registered for the current request.
-func (s *Registry) Save(w http.ResponseWriter) error {
+func (s *Registry) Save(w Header) error {
 	var errMulti MultiError
 	for name, info := range s.sessions {
 		session := info.s
@@ -176,7 +176,7 @@ func init() {
 }
 
 // Save saves all sessions used during the current request.
-func Save(ctx context.Context, w http.ResponseWriter) error {
+func Save(ctx context.Context, w Header) error {
 	r := GetRegistry(ctx)
 	return r.Save(w)
 }

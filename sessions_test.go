@@ -59,7 +59,7 @@ func TestFlashes(t *testing.T) {
 	// Custom key.
 	session.AddFlash("baz", "custom_key")
 	// Save.
-	if err = Save(req.Context(), rsp); err != nil {
+	if err = Save(req.Context(), rsp.Header()); err != nil {
 		t.Fatalf("Error saving session: %v", err)
 	}
 	hdr = rsp.Header()
@@ -124,7 +124,7 @@ func TestFlashes(t *testing.T) {
 	// Add some flashes.
 	session.AddFlash(&FlashMessage{42, "foo"})
 	// Save.
-	if err = Save(req.Context(), rsp); err != nil {
+	if err = Save(req.Context(), rsp.Header()); err != nil {
 		t.Fatalf("Error saving session: %v", err)
 	}
 	hdr = rsp.Header()
@@ -206,7 +206,7 @@ func TestCookieStoreMapPanic(t *testing.T) {
 
 	session.Values["data"] = "hello-world"
 
-	err = session.Save(req.Header, w)
+	err = session.Save(req.Header, w.Header())
 	if err != nil {
 		t.Fatal("failed to save session", err)
 	}

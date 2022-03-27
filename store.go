@@ -8,7 +8,6 @@ import (
 	"context"
 	"encoding/base32"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
@@ -30,7 +29,7 @@ type Store interface {
 	New(r Header, name string) (*Session, error)
 
 	// Save should persist session to the underlying store implementation.
-	Save(r Header, w http.ResponseWriter, s *Session) error
+	Save(r Header, w Header, s *Session) error
 }
 
 // CookieStore ----------------------------------------------------------------
@@ -99,14 +98,14 @@ func (s *CookieStore) New(r Header, name string) (*Session, error) {
 }
 
 // Save adds a single session to the response.
-func (s *CookieStore) Save(r Header, w http.ResponseWriter,
+func (s *CookieStore) Save(r Header, w Header,
 	session *Session) error {
 	encoded, err := securecookie.EncodeMulti(session.Name(), session.Values,
 		s.Codecs...)
 	if err != nil {
 		return err
 	}
-	http.SetCookie(w, NewCookie(session.Name(), encoded, session.Options))
+	SetCookie(w, NewCookie(session.Name(), encoded, session.Options))
 	return nil
 }
 
@@ -209,14 +208,14 @@ var base32RawStdEncoding = base32.StdEncoding.WithPadding(base32.NoPadding)
 // deleted from the store path. With this process it enforces the properly
 // session cookie handling so no need to trust in the cookie management in the
 // web browser.
-func (s *FilesystemStore) Save(r Header, w http.ResponseWriter,
+func (s *FilesystemStore) Save(r Header, w Header,
 	session *Session) error {
 	// Delete if max-age is <= 0
 	if session.Options.MaxAge <= 0 {
 		if err := s.erase(session); err != nil {
 			return err
 		}
-		http.SetCookie(w, NewCookie(session.Name(), "", session.Options))
+		SetCookie(w, NewCookie(session.Name(), "", session.Options))
 		return nil
 	}
 
@@ -234,7 +233,7 @@ func (s *FilesystemStore) Save(r Header, w http.ResponseWriter,
 	if err != nil {
 		return err
 	}
-	http.SetCookie(w, NewCookie(session.Name(), encoded, session.Options))
+	SetCookie(w, NewCookie(session.Name(), encoded, session.Options))
 	return nil
 }
 
