@@ -77,7 +77,6 @@ func TestFlashes(t *testing.T) {
 	req, _ = http.NewRequest("GET", "http://localhost:8080/", nil)
 	req = req.WithContext(NewRegistryContext(req.Context(), req.Header))
 	req.Header.Add("Cookie", cookies[0])
-	rsp = NewRecorder()
 	// Get a session.
 	if session, err = store.Get(req.Context(), req.Header, "session-key"); err != nil {
 		t.Fatalf("Error getting session: %v", err)
@@ -139,7 +138,6 @@ func TestFlashes(t *testing.T) {
 	req, _ = http.NewRequest("GET", "http://localhost:8080/", nil)
 	req = req.WithContext(NewRegistryContext(req.Context(), req.Header))
 	req.Header.Add("Cookie", cookies[0])
-	rsp = NewRecorder()
 	// Get a session.
 	if session, err = store.Get(req.Context(), req.Header, "session-key"); err != nil {
 		t.Fatalf("Error getting session: %v", err)
